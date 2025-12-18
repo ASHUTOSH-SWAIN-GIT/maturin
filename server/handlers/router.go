@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func NewRouter(store *database.Store) http.Handler {
+func NewRouter(queries *database.Queries) http.Handler {
 	r := chi.NewRouter()
 	_ = godotenv.Load()
 
@@ -28,6 +28,15 @@ func NewRouter(store *database.Store) http.Handler {
 	}))
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
+	})
+
+	h := NewBucketHandler(queries)
+
+	r.Route("/v1", func(r chi.Router) {
+		r.Get("/buckets", h.ListBuckets)
+		r.Post("/buckets", h.RegisterBucket)
+		r.Post("/buckets/{id}/scan", h.TriggerScan)
+		r.Get("/buckets/{id}/stats", h.GetStats)
 	})
 
 	return r
