@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/ASHUTOSH-SWAIN-GIT/maturin/config"
 	"github.com/ASHUTOSH-SWAIN-GIT/maturin/database"
+	"github.com/ASHUTOSH-SWAIN-GIT/maturin/handlers"
 )
 
 func main() {
@@ -19,6 +21,13 @@ func main() {
 		log.Fatal(err)
 	}
 	defer store.Close()
+	log.Println("Database connection established")
 
-	log.Println("Successfully connected to the database!")
+	// Initialize Router
+	router := handlers.NewRouter(store)
+
+	log.Printf("Server listening on port %s", cfg.Port)
+	if err := http.ListenAndServe(":"+cfg.Port, router); err != nil {
+		log.Fatal(err)
+	}
 }
