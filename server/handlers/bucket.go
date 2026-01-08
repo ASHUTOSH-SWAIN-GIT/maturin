@@ -35,7 +35,7 @@ func (h *BucketHandler) RegisterBucket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 1. Encrypt the keys before saving
+	//  Encrypt the keys before saving
 	encAccess, err := security.Encrypt(req.AccessKey)
 	if err != nil {
 		http.Error(w, "Encryption failed", http.StatusInternalServerError)
@@ -74,7 +74,7 @@ func (h *BucketHandler) ListBuckets(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type BucketResponse struct {
-		ID        int32  `json:"id"` // sqlc uses int32 for SERIAL/INTEGER
+		ID        int32  `json:"id"` 
 		Name      string `json:"name"`
 		AccountID string `json:"account_id"`
 	}

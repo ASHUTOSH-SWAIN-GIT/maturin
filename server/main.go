@@ -12,13 +12,13 @@ import (
 )
 
 func main() {
-	// 1. Load Configuration
+	//  Load Configuration
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// 2. Open Database Connection
+	//  Open Database Connection
 	log.Println("Connecting to Supabase...")
 	conn, err := sql.Open("pgx", cfg.DatabaseURL)
 	if err != nil {
@@ -26,21 +26,19 @@ func main() {
 	}
 	defer conn.Close()
 
-	// 3. Check Connection
+	//  Check Connection
 	if err := conn.Ping(); err != nil {
 		log.Fatal(err)
 	}
 	log.Println("Database connection established")
 
-	// 4. Initialize sqlc Queries
-	// 'queries' contains all your type-safe methods like CreateBucket, ListBuckets
+	// Initialize sqlc Queries
 	queries := database.New(conn)
 
-	// 5. Initialize Router
-	// Note: We need to update handlers.NewRouter to accept *database.Queries
+	//  Initialize Router
 	router := handlers.NewRouter(queries)
 
-	// 6. Start Server
+	//  Start Server
 	log.Printf("Server listening on port %s", cfg.Port)
 	if err := http.ListenAndServe(":"+cfg.Port, router); err != nil {
 		log.Fatal(err)
